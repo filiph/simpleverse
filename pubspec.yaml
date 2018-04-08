@@ -1,0 +1,15 @@
+name: simplehaiku
+description: A sample command-line application.
+version: 0.0.1
+#homepage: https://www.example.com
+#author: Filip Hracek <email@example.com>
+
+environment:
+  sdk: '>=1.20.1 <2.0.0'
+
+dependencies:
+  english_words: ^3.1.0
+  http: ^0.11.3+16
+
+dev_dependencies:
+  test: ^0.12.0
