@@ -2,17 +2,17 @@
 
 A simple program that is procedurally generating short poems. Example output:
 
-> It is made up of old volcanic mountains with many nationally recognized streams.
-> It's okay, really, everything's fine as it seems.
-> It is a station where passenger trains stop on the First ScotRail railway line.
-> It has some of the Boeing 707's design.
+> It is made up of old volcanic mountains with many nationally recognized streams.<br>
+> It's okay, really, everything's fine as it seems.<br>
+> It is a station where passenger trains stop on the First ScotRail railway line.<br>
+> It has some of the Boeing 707's design.<br>
 
 Similarly:
 
-> It's the reason why I retired.
-> It can cause cramps, vomiting, diarrhea, feeling dizzy, nausea, and feeling tired.
-> It has 31 days.
-> It has many gardens, and also has a maze.
+> It's the reason why I retired.<br>
+> It can cause cramps, vomiting, diarrhea, feeling dizzy, nausea, and feeling tired.<br>
+> It has 31 days.<br>
+> It has many gardens, and also has a maze.<br>
 
 There are two inspirations for this program:
 
