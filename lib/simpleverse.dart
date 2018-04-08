@@ -86,21 +86,21 @@ class SimpleVerse {
     final rhymingWords = await _getRhymesForWord(lastWord);
 
     buf.writeln(firstSentence);
-    List<String> secondSentenceCandidates = [];
+    List<String> candidates = [];
     for (final word in rhymingWords) {
       final rhymingSentences = _findSentenceByLastWord(word);
       for (final sentence in rhymingSentences) {
         if (sentence != firstSentence) {
-          secondSentenceCandidates.add(sentence);
+          candidates.add(sentence);
         }
       }
     }
-    if (secondSentenceCandidates.isEmpty) {
+    if (candidates.isEmpty) {
       // No rhyme could be found for this, try again.
       return _createOneRhyme();
     }
-    final secondSentence = secondSentenceCandidates[
-        random.nextInt(secondSentenceCandidates.length)];
+    final secondSentence = candidates[
+        random.nextInt(candidates.length)];
     return new Rhyme(firstSentence, secondSentence);
   }
 
@@ -122,7 +122,11 @@ class SimpleVerse {
     final url = "https://api.datamuse.com/words?rel_rhy=$word";
     final response = await http.get(url);
     final List<Map<String, Object>> json = JSON.decode(response.body);
-    final List<String> words = json.map((wordJson) => wordJson["word"]);
+    final List<String> words = json
+        .map((wordJson) => wordJson["word"])
+        // No absolute verses, please.
+        .where((w) => w != word)
+        .toList(growable: false);
     return words;
   }
 
