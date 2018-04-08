@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:simplehaiku/simplehaiku.dart';
+import 'package:simpleverse/simpleverse.dart';
 
 main(List<String> arguments) async {
   final filename = arguments.single;
@@ -11,8 +11,8 @@ main(List<String> arguments) async {
   final lines = stream.transform(UTF8.decoder)
       .transform(const LineSplitter());
 
-  final writer = new SimpleHaiku();
+  final writer = new SimpleVerse();
   await writer.feed(lines);
 
-  await writer.generate().take(10).forEach(print);
+  await writer.generate().take(50).forEach(print);
 }

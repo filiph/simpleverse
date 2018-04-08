@@ -5,7 +5,14 @@ import 'dart:math';
 import 'package:english_words/english_words.dart';
 import 'package:http/http.dart' as http;
 
-class SimpleHaiku {
+class Rhyme {
+  final String first;
+  final String second;
+
+  const Rhyme(this.first, this.second);
+}
+
+class SimpleVerse {
   static const _shortestSyllables = 3;
 
   static const _longestSyllables = 24;
@@ -23,6 +30,7 @@ class SimpleHaiku {
 
   Random random = new Random();
 
+  /// Feed the object with a corpus, line by line.
   Future<Null> feed(Stream<String> lines) async {
     await for (final line in lines) {
       final matches = _itsSentence.allMatches(line);
@@ -36,6 +44,7 @@ class SimpleHaiku {
       _sentences[i] = sentence;
     }
 
+    // Filter ugly and unwanted sentences.
     _sentences.removeWhere((sentence) {
       if (sentence.contains("[")) return true;
       if (sentence.contains("]")) return true;
@@ -43,6 +52,7 @@ class SimpleHaiku {
       if (sentence.contains("}")) return true;
       if (sentence.contains("|")) return true;
       if (sentence.contains(";")) return true;
+      if (".".allMatches(sentence).length > 1) return true;
       final length = _syllablesInSentence(sentence);
       if (length < _shortestSyllables) return true;
       if (length > _longestSyllables) return true;
@@ -50,58 +60,68 @@ class SimpleHaiku {
     });
   }
 
+  /// Generates one little poem.
   Stream<String> generate() async* {
     while (true) {
       final a = await _createOneRhyme();
       final b = await _createOneRhyme();
       final buf = new StringBuffer();
       buf.writeln(a.first);
-      buf.writeln(b.first);
       buf.writeln(a.second);
+      buf.writeln(b.first);
       buf.writeln(b.second);
       yield buf.toString();
     }
   }
 
+  /// Creates a random rhyme.
+  ///
+  /// Beware that with a small-enough corpus, this could take too much time
+  /// or forever. There is no bail-out.
   Future<Rhyme> _createOneRhyme() async {
-    final count = _sentences.length;
     final buf = new StringBuffer();
 
-    final firstSentence = _sentences[random.nextInt(count)];
+    final firstSentence = _getRandomSentence();
     final lastWord = _word.allMatches(firstSentence).last.group(0);
     final rhymingWords = await _getRhymesForWord(lastWord);
 
     buf.writeln(firstSentence);
-    String secondSentence;
+    List<String> secondSentenceCandidates = [];
     for (final word in rhymingWords) {
-      final rhymingSentence = _findSentenceByLastWord(word);
-      if (rhymingSentence != null) {
-        secondSentence = rhymingSentence;
-        break;
+      final rhymingSentences = _findSentenceByLastWord(word);
+      for (final sentence in rhymingSentences) {
+        if (sentence != firstSentence) {
+          secondSentenceCandidates.add(sentence);
+        }
       }
     }
-    if (secondSentence == null) {
+    if (secondSentenceCandidates.isEmpty) {
       // No rhyme could be found for this, try again.
       return _createOneRhyme();
     }
+    final secondSentence = secondSentenceCandidates[
+        random.nextInt(secondSentenceCandidates.length)];
     return new Rhyme(firstSentence, secondSentence);
   }
 
-  String _findSentenceByLastWord(String word) {
+  Iterable<String> _findSentenceByLastWord(String word) sync* {
     for (final sentence in _sentences) {
       if (sentence.endsWith("$word.")) {
-        return sentence;
+        yield sentence;
       }
     }
-
-    return null;
   }
 
-  /// Get from https://api.datamuse.com/words?rel_rhy=forgetful.
-  Future<List<String>> _getRhymesForWord(String lastWord) async {
-    final url = "https://api.datamuse.com/words?rel_rhy=$lastWord";
+  String _getRandomSentence() => _sentences[random.nextInt(_sentences.length)];
+
+  /// Takes [word] and asynchronously returns a list of words that rhyme
+  /// with it.
+  ///
+  /// Uses https://api.datamuse.com/words.
+  Future<List<String>> _getRhymesForWord(String word) async {
+    final url = "https://api.datamuse.com/words?rel_rhy=$word";
     final response = await http.get(url);
-    final List<Map<String,Object>> json = JSON.decode(response.body);
+    final List<Map<String, Object>> json = JSON.decode(response.body);
     final List<String> words = json.map((wordJson) => wordJson["word"]);
     return words;
   }
@@ -114,11 +134,4 @@ class SimpleHaiku {
     }
     return result;
   }
-}
-
-class Rhyme {
-  final String first;
-  final String second;
-
-  const Rhyme(this.first, this.second);
 }
