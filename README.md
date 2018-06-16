@@ -22,13 +22,14 @@ The design of the program is itself very simple and straightforward. Take a corp
 
 1. Clone this project.
 2. [Install Dart](https://www.dartlang.org/install).
-3. Download a large corpus of text.
+3. In this project's directory, run `pub get`.
+4. Download a large corpus of text.
 
    Simple English Wikipedia is recommended. You can see all its database dumps [here](https://dumps.wikimedia.org/simplewiki/). You probably want the `*-pages-meta-current.xml.bz2` file, which you can then extract.
 
 ## How to run
 
-4. In the project's directory, run `dart bin/main.dart path/to/corpus/file.txt`.
+5. In the project's directory, run `dart bin/main.dart path/to/corpus/file.txt`.
 
 By default, the program outputs 50 short poems to standard output before exiting. This will take at least a minute.
 
