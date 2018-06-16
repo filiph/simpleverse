@@ -19,16 +19,15 @@ class SimpleVerse {
 
   static final _word = new RegExp(r"\w+");
 
-  List<String> _sentences = [];
+  final _sentences = <String>[];
 
-  final RegExp _itsSentence =
-      new RegExp(r"It('s| is| has| can) .+?[a-z]\.(\s|$)");
+  final _itsSentence = new RegExp(r"It('s| is| has| can) .+?[a-z]\.(\s|$)");
 
-  final RegExp _wikiSimpleLink = new RegExp(r"\[\[(.+?)\]\]");
+  final _wikiSimpleLink = new RegExp(r"\[\[(.+?)\]\]");
 
-  final RegExp _wikiModifiedLink = new RegExp(r"\[\[(.+?)\|\|.+?\]\]");
+  final _wikiModifiedLink = new RegExp(r"\[\[(.+?)\|\|.+?\]\]");
 
-  Random random = new Random();
+  final _random = new Random();
 
   /// Feed the object with a corpus, line by line.
   Future<Null> feed(Stream<String> lines) async {
@@ -37,11 +36,10 @@ class SimpleVerse {
       _sentences.addAll(matches.map((m) => m.group(0)));
     }
     for (int i = 0; i < _sentences.length; i++) {
-      var sentence = _sentences[i];
-      sentence = sentence.replaceAllMapped(_wikiSimpleLink, (m) => m.group(1));
-      sentence =
-          sentence.replaceAllMapped(_wikiModifiedLink, (m) => m.group(1));
-      _sentences[i] = sentence;
+      var s = _sentences[i];
+      s = s.replaceAllMapped(_wikiSimpleLink, (m) => m.group(1));
+      s = s.replaceAllMapped(_wikiModifiedLink, (m) => m.group(1));
+      _sentences[i] = s;
     }
 
     // Filter ugly and unwanted sentences.
@@ -66,6 +64,7 @@ class SimpleVerse {
       final a = await _createOneRhyme();
       final b = await _createOneRhyme();
       final buf = new StringBuffer();
+      // AABB verse
       buf.writeln(a.first);
       buf.writeln(a.second);
       buf.writeln(b.first);
@@ -99,8 +98,7 @@ class SimpleVerse {
       // No rhyme could be found for this, try again.
       return _createOneRhyme();
     }
-    final secondSentence = candidates[
-        random.nextInt(candidates.length)];
+    final secondSentence = candidates[_random.nextInt(candidates.length)];
     return new Rhyme(firstSentence, secondSentence);
   }
 
@@ -112,7 +110,7 @@ class SimpleVerse {
     }
   }
 
-  String _getRandomSentence() => _sentences[random.nextInt(_sentences.length)];
+  String _getRandomSentence() => _sentences[_random.nextInt(_sentences.length)];
 
   /// Takes [word] and asynchronously returns a list of words that rhyme
   /// with it.
