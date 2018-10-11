@@ -17,17 +17,17 @@ class SimpleVerse {
 
   static const _longestSyllables = 24;
 
-  static final _word = new RegExp(r"\w+");
+  static final _word = RegExp(r"\w+");
 
   final _sentences = <String>[];
 
-  final _itsSentence = new RegExp(r"It('s| is| has| can) .+?[a-z]\.(\s|$)");
+  final _itsSentence = RegExp(r"It('s| is| has| can) .+?[a-z]\.(\s|$)");
 
-  final _wikiSimpleLink = new RegExp(r"\[\[(.+?)\]\]");
+  final _wikiSimpleLink = RegExp(r"\[\[(.+?)\]\]");
 
-  final _wikiModifiedLink = new RegExp(r"\[\[(.+?)\|\|.+?\]\]");
+  final _wikiModifiedLink = RegExp(r"\[\[(.+?)\|\|.+?\]\]");
 
-  final _random = new Random();
+  final _random = Random();
 
   /// Feed the object with a corpus, line by line.
   Future<Null> feed(Stream<String> lines) async {
@@ -63,7 +63,7 @@ class SimpleVerse {
     while (true) {
       final a = await _createOneRhyme();
       final b = await _createOneRhyme();
-      final buf = new StringBuffer();
+      final buf = StringBuffer();
       // AABB verse
       buf.writeln(a.first);
       buf.writeln(a.second);
@@ -78,7 +78,7 @@ class SimpleVerse {
   /// Beware that with a small-enough corpus, this could take too much time
   /// or forever. There is no bail-out.
   Future<Rhyme> _createOneRhyme() async {
-    final buf = new StringBuffer();
+    final buf = StringBuffer();
 
     final firstSentence = _getRandomSentence();
     final lastWord = _word.allMatches(firstSentence).last.group(0);
@@ -99,7 +99,7 @@ class SimpleVerse {
       return _createOneRhyme();
     }
     final secondSentence = candidates[_random.nextInt(candidates.length)];
-    return new Rhyme(firstSentence, secondSentence);
+    return Rhyme(firstSentence, secondSentence);
   }
 
   Iterable<String> _findSentenceByLastWord(String word) sync* {
