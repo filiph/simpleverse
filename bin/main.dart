@@ -8,7 +8,7 @@ main(List<String> arguments) async {
   final filename = arguments.single;
   final file = new File(filename);
   Stream<List<int>> stream = file.openRead();
-  final lines = stream.transform(UTF8.decoder)
+  final lines = stream.transform(utf8.decoder)
       .transform(const LineSplitter());
 
   final writer = new SimpleVerse();

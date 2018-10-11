@@ -119,9 +119,11 @@ class SimpleVerse {
   Future<List<String>> _getRhymesForWord(String word) async {
     final url = "https://api.datamuse.com/words?rel_rhy=$word";
     final response = await http.get(url);
-    final List<Map<String, Object>> json = JSON.decode(response.body);
-    final List<String> words = json
+    final jsonList =
+        (json.decode(response.body) as List).cast<Map<String, Object>>();
+    final List<String> words = jsonList
         .map((wordJson) => wordJson["word"])
+        .cast<String>()
         // No absolute verses, please.
         .where((w) => w != word)
         .toList(growable: false);
