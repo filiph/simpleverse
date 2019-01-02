@@ -1,5 +1,7 @@
 # simpleverse
 
+#### This program won the 2018 LyriX Competition, part of the [Creative Turing Test](http://bregman.dartmouth.edu/turingtests/competition2018) organized at Dartmouth College.
+
 A simple program that is procedurally generating short poems. Example output:
 
 > It's the reason why I retired.<br>
